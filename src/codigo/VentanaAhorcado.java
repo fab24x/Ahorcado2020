@@ -5,6 +5,8 @@
  */
 package codigo;
 
+import java.awt.Image;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 /**
@@ -15,8 +17,63 @@ public class VentanaAhorcado extends javax.swing.JFrame {
 //este metedo recibe el boton que ha sido pulsado 
 //y procesa la letra que tiene en su etiqueta
     
+    //esta variable guarda cuantos fallos llevo en el juego
+    int numeroFallos = 0;
+    
+    String palabraOculta = "CETYS";
+    
     private void chequeaBoton(JButton boton){
         boton.setEnabled(false);
+        chequeaLetra(boton.getText());
+    }
+    
+    private void chequeaLetra(String letra){
+        String palabraConGuiones = jLabel1.getText();
+        if (palabraOculta.contains(letra)){
+            //en este caso la letra si que esta y hay que: 1º que la o las letras se descubriran en la palabra con guiones
+            //2º
+            char letraPulsada = letra.charAt(0);
+            for (int i=0; i< palabraOculta.length(); i++){
+                if (palabraOculta.charAt(i) == letraPulsada){
+                    palabraConGuiones =  palabraConGuiones.substring(0, 2*i)
+                            + letra
+                            + palabraConGuiones.substring(2*i+1);
+                }          
+            }
+            jLabel1.setText(palabraConGuiones);
+            if(!palabraConGuiones.contains("_")){
+                numeroFallos = -1;
+                dibujaImagen();
+            }
+        }
+        else {
+            numeroFallos++;
+            dibujaImagen();
+        }
+            
+    }
+    
+    //cambia la imagen en funcion de los fallos que se tengan
+    private void dibujaImagen(){
+        String nombreImagen = "";
+        switch (numeroFallos){
+            case -1: nombreImagen = "/IMG/acertasteTodo";break;
+            case 0: nombreImagen = "/IMG/ahorcado_0.png";break;
+            case 1: nombreImagen = "/IMG/ahorcado_1.png";break;
+            case 2: nombreImagen = "/IMG/ahorcado_2.png";break;
+            case 3: nombreImagen = "/IMG/ahorcado_3.png";break;
+            case 4: nombreImagen = "/IMG/ahorcado_4.png";break;
+            case 5: nombreImagen = "/IMG/ahorcado_5.png";break;
+            default : nombreImagen = "/IMG/ahorcado_fin.png";break;
+        }
+        ImageIcon miImagen =
+                new ImageIcon(
+                        new ImageIcon(getClass().getResource(nombreImagen))
+                        .getImage()
+                        .getScaledInstance(jLabel2.getWidth(), jLabel2.getHeight(), Image.SCALE_DEFAULT)
+        );
+        //cargo la imagen que muestra que fallo llevamos
+        jLabel2.setIcon(miImagen);
     }
     
     /**
@@ -24,6 +81,7 @@ public class VentanaAhorcado extends javax.swing.JFrame {
      */
     public VentanaAhorcado() {
         initComponents();
+        dibujaImagen();
     }
 
     /**
@@ -69,7 +127,7 @@ public class VentanaAhorcado extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 48)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("_ _ _ _");
+        jLabel1.setText("_ _ _ _ _");
 
         A.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         A.setText("A");
@@ -293,12 +351,7 @@ public class VentanaAhorcado extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
@@ -362,15 +415,19 @@ public class VentanaAhorcado extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(T, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(37, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -415,6 +472,8 @@ public class VentanaAhorcado extends javax.swing.JFrame {
                     .addComponent(Z, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
+
+        jLabel1.getAccessibleContext().setAccessibleName("_ _ _ _ _");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
